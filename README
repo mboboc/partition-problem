@@ -1,0 +1,63 @@
+BOBOC MADALINA 323CD
+
+Implementare:
+Am ales sa implementez algoritmii cu liste dublu inlantuite. Fisierele
+ce contin functiile de la liste sunt in DoubleLinkedList.h iar 
+cei doi algorimi sunt implementati ca functii in algo1.c.
+In fisierele .in:
+->primul nr este dimensiunea multimii
+->restul reprezinta multimea
+->toate numerele sunt despartite prin spatii
+In program citesc numerele ca argumente in linie de comanda.
+In fisirele .out:
+-> au forma:
+greedyAlgo: 1 //suma la algoritmul greedy
+greedyAlgoRUNTIME: 15626.000000
+KKAlgo: 0 // suma la algoritmul kk
+KKAlgoRUNTIME: 15625.000000
+
+*ft_atoi e atoi doar ca l-am facut eu
+*Timpul e masurat doar in interiorul functiilor
+
+Generator de teste:
+Initial am vrut sa scriu generatorul in C dar cand am vazut ca stdlib
+nu are itoa mi s-a facut sila si l-am facut in java.
+Fisierul TestGenerator contine clasele pentru generatorul de teste.
+N-am reusit sa fac script si pentru generatorul 
+de teste (am facut doar pentru compilare) asa ca le-am generat
+manual. 
+
+Script:
+Scriptul script.sh genereaza fisierele .out in numar de 200.
+
+Teste:
+Am modificat niste lucruri fata de ce am scris in documentatie.
+In primul rand am facut multimile mai mari -> pana in 5000 de elemente.
+Am ales 2^28 in loc de 2^48 pentru testele mai dificile.
+Ultimele 20 de teste sunt teste fara dubluri, pentru a face 
+testele si mai dificile.
+Am restrans numarul de teste la 200.
+
+Primul set de teste a fost mai mult de proba. 
+Intervalul de generare l-am ales restrans pentru a vedea din ochi 
+cam cum se comporta algoritmul.
+Set 1.
+Testele 0 - 49; 
+Interval generare: 1 - 200 cu dubluri;
+Toate multimile au 2000 de numere generate.
+
+Set 2.
+Testele 50 - 100;
+Interval de generare: 1-2147483647 cu dubluri;
+Numarul de elemente din multime: Random intre [1-5000]
+
+Set 3.
+Testele 100 - 180
+Interval de generare: 16777216 - 33554432 cu dubluri;
+Numarul de elemente din multime: Random intre [1-5000]
+
+Set 4.
+Testele 180 - 200;
+Interval de generare: 1-2147483647 fara dubluri
+Numarul de elemente din multime: 2000;    
+
