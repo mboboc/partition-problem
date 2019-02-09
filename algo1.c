@@ -3,7 +3,7 @@
 #include "DoubleLinkedList.h"
 #include "ft_atoi.c"
 #include <string.h>
-#include <time.h>
+#include <sys/time.h>
 
 void insertAt(List* list, Item elem, int pos);
 
@@ -12,7 +12,7 @@ void printList(List *list) {
 		printf("List == NULL\n");
 		return;
 	}
-	while(list->first != NULL) {
+	while (list->first != NULL) {
 		printf("%d ", list->first->elem);
 		list->first = list->first->next;
 	}
@@ -23,18 +23,22 @@ int cmpfunc (const void * a, const void * b) {
 }
 
 int KKAlgo(List **list, int size, FILE *fid) {
-	clock_t begin = clock();
-	ListNode *n1;
-	ListNode *n2;
-	ListNode *aux;
-	int e1;
-	int e2;
-	int i;
-	int pos;
-	int diff;
-	int inserted;
+	ListNode    *n1;
+	ListNode    *n2;
+	ListNode    *aux;
+	int         e1;
+	int         e2;
+	int         i;
+	int         pos;
+	int         diff;
+	int         inserted;
+    struct      timeval t0, t1;
+    int         aux_size;
+    
+    aux_size = size;
+    gettimeofday(&t0, NULL);
 	i = size;
-	while(i != 1) {
+    while (i != 1) {
 		n1 = (*list)->first;
 		n2 = (*list)->first->next;
 		e1 = n1->elem;
@@ -46,8 +50,8 @@ int KKAlgo(List **list, int size, FILE *fid) {
 		pos = 0;
 		inserted = 0;
 		aux = (*list)->first;
-		while(pos < size) {
-			if(diff > aux->elem) {
+		while (pos < size) {
+			if (diff > aux->elem) {
 				insertAt(*list, abs(e1 - e2), pos);
 				size++;
 				inserted = 1;
@@ -61,84 +65,71 @@ int KKAlgo(List **list, int size, FILE *fid) {
 			size++;
 		}
 		i--;
-	}
-	clock_t end = clock();
-	double time_spent = (double)(end - begin); // CLOCKS_PER_SEC;
-	fprintf(fid, "KKAlgo: %d\n", (*list)->first->elem);
-	fprintf(fid, "KKAlgoRUNTIME: %f\n", time_spent);
-	return (*list)->first->elem;
+	}	
+	gettimeofday(&t1, NULL);
+    long elapsed = (t1.tv_sec - t0.tv_sec)*1000000 + t1.tv_usec - t0.tv_usec;
+    //fprintf(fid, "KKAlgo: %d\n", (*list)->first->elem);
+	//fprintf(fid, "KKAlgoRUNTIME: %ld ms\n", elapsed);
+	//fprintf(fid, "%d ", (*list)->first->elem);
+    //fprintf(fid, "%d", aux_size);
+    return (*list)->first->elem;
 }
 
-
 int greedyAlgo(List **list, int size, FILE *fid) {
-	clock_t begin = clock();
-	List *s1;
-	List *s2;
-	ListNode *aux;
-	int sum1 = 0;
-	int sum2 = 0;
-	int max;
+	ListNode    *aux;
+	int         sum1;
+	int         sum2;
+    struct      timeval t0, t1;
 
-	s1 = createList();
-	s2 = createList();
-	while(size > 0) {
-		max = 0;
-		aux = (*list)->first;
-		while(aux->next != NULL) {
-			if(aux->elem > max)
-				max = aux->elem;
-			aux = aux->next;
-		}
-		if(sum1 >= sum2) {
-			sum2 = sum2 + max;
-			insertAt(s2, max, 0);
-			deleteOnce(*list, max);
+    gettimeofday(&t0, NULL);
+	sum1 = 0;
+    sum2 = 0;
+    aux = (*list)->first;
+    while (size > 0) {
+		if (sum1 >= sum2) {
+			sum2 = sum2 + aux->elem;
+			deleteOnce(*list, aux->elem);
 		} else {
-			sum1 = sum1 + max;
-			insertAt(s1, max, 0);
-			deleteOnce(*list, max);
+			sum1 = sum1 + aux->elem;
+			deleteOnce(*list, aux->elem);
 		}
+        aux = aux->next;
 		size--;
 	}
-	//printf("Prima partitie: ");
-	//printList(s1);
-	//printf("\n");
-	//printf("Suma1: %d\n", sum1);
-	//printf("A doua partitie: ");
-	//printList(s2);
-	//printf("\n");
-	//printf("Suma2: %d\n", sum2);
-	clock_t end = clock();
-	double time_spent = (double)(end - begin); // CLOCKS_PER_SEC;
-	fprintf(fid, "greedyAlgo: %d\n", abs(sum1 - sum2));
-	fprintf(fid, "greedyAlgoRUNTIME: %f\n", time_spent);
-	return abs(sum1 - sum2);
+	gettimeofday(&t1, NULL);
+    long elapsed = (t1.tv_sec - t0.tv_sec)*1000000 + t1.tv_usec - t0.tv_usec;
+    //fprintf(fid, "greedyAlgo: %d\n", abs(sum1 - sum2));
+	//fprintf(fid, "greedyAlgoRUNTIME: %ld ms\n", elapsed);
+	//fprintf(fid, "%d", abs(sum1 - sum2));
+    fprintf(fid, "%d", elapsed);
+    return abs(sum1 - sum2);
 }
 
 int main(int argc, char *argv[]) {
-	int size = 0;
-	int i;
-	int buff;
-	List *list;
-	List *list1;
-	char *aux;
-	int *bufferArray;
-	int diff;
-	int diff1;
-	FILE *fid;
-	int auxSize = 0;
-	char *c;
-
+	int         size = 0;
+	int         i;
+	int         buff;
+	List        *list;
+	List        *list1;
+	char        *aux;
+	int         *bufferArray;
+	int         diff;
+	int         diff1;
+	FILE        *fid;
+	int         auxSize;
+	char        *c;
+    
+    auxSize = 0;
 	bufferArray = (int *)malloc(sizeof(int) * argc - 2);
 	list = createList();
 	list1 = createList();
-	if(argc > 1) {
+	if (argc > 1) {
 		c = argv[0];
-		while(*c != '\0') {
+		while (*c != '\0') {
 			auxSize ++;
 			c++;
 		}
-		if(auxSize == 7) {
+		if (auxSize == 7) {
 			aux = malloc(14 * sizeof(char));
 			strcat(aux, "out/");
 			strcat(aux, argv[0] + 2);
@@ -168,14 +159,14 @@ int main(int argc, char *argv[]) {
 		}
 		size = ft_atoi(argv[1]);
 		i = 2;
-		while(i < size + 2) {
+		while (i < size + 2) {
 			buff = ft_atoi(argv[i]);
 			bufferArray[i - 2] = buff;
 			i++;
 		}
 		qsort(bufferArray, size, sizeof(int), cmpfunc);
 		i = 0;
-		while(i < size) {
+		while (i < size) {
 			insertAt(list, bufferArray[i], 0);
 			insertAt(list1, bufferArray[i], 0);
 			i++;
